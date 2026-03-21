@@ -32,7 +32,5 @@ app.use("/api/checkout", checkoutRoutes);
 app.use(adminRoutes);
 app.use(productRoutes);
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(process.cwd(), "public", "index.html"));
-});
+app.use(express.static(path.join(process.cwd(), "public")));
 export default app;
