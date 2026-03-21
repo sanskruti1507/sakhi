@@ -13,9 +13,7 @@ import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
 
-// ✅ Fix path for ES Modules (VERY IMPORTANT)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 // ✅ Middleware
 app.use(express.json());
@@ -33,9 +31,16 @@ app.use("/api/checkout", checkoutRoutes);
 app.use(adminRoutes);
 app.use(productRoutes);
 
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ Serve static files
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.get("/", (req, res) => {
+// ✅ FORCE homepage for ALL routes
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 export default app;
