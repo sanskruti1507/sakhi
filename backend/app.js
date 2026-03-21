@@ -1,23 +1,29 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import path from "path";
+import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/authRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
-import checkoutRoutes from "./routes/checkoutRoutes.js";        
+import checkoutRoutes from "./routes/checkoutRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
 
+// ✅ Fix path for ES Modules (VERY IMPORTANT)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ✅ Serve public folder
-app.use(express.static(path.join(process.cwd(), "public")));
+// ✅ Serve frontend (FINAL FIX)
+app.use(express.static(path.join(__dirname, "../public")));
 
 // ✅ API routes
 app.use(authRoutes);
@@ -28,9 +34,9 @@ app.use("/api/checkout", checkoutRoutes);
 app.use(adminRoutes);
 app.use(productRoutes);
 
-// ✅ Homepage route
+// ✅ Homepage route (FINAL)
 app.get("/", (req, res) => {
-  res.sendFile(path.join(process.cwd(), "public", "index.html"));
+  res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 export default app;

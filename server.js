@@ -9,24 +9,26 @@ import Product from "./backend/models/Product.js";
 
 const start = async () => {
   await connectDB();
+
+  // ✅ Payment route
   app.use("/api/payment", paymentRoutes);
 
-  // If no products exist in DB, import static products on startup
+  // ✅ Import products if DB empty
   try {
     const count = await Product.countDocuments();
     if (!count) {
-      console.log('No products found in DB — importing static products...');
-      const res = await importStaticProducts();
-      console.log('Import result:', res && res.result ? res.result : res);
+      console.log("No products found — importing...");
+      await importStaticProducts();
     }
   } catch (err) {
-    console.warn('Product import failed on startup:', err.message);
+    console.log("Import error:", err.message);
   }
 
-  app.listen(process.env.PORT || 3000, () => {
-    console.log(`🚀 Server running on http://localhost:${process.env.PORT || 3000}`);
+  const PORT = process.env.PORT || 3000;
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
   });
 };
 
 start();
-
