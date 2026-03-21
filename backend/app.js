@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ✅ Serve public folder correctly
+// ✅ Serve public folder
 app.use(express.static(path.join(process.cwd(), "public")));
 
 // ✅ API routes
