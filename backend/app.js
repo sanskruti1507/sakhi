@@ -13,16 +13,16 @@ import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
 
-
+// ✅ Fix for __dirname in ES Modules (Only define this once)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ✅ Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-
-
-// ✅ API routes
+// ✅ API routes (Place these BEFORE static files)
 app.use(authRoutes);
 app.use(cartRoutes);
 app.use(orderRoutes);
@@ -31,16 +31,15 @@ app.use("/api/checkout", checkoutRoutes);
 app.use(adminRoutes);
 app.use(productRoutes);
 
-import { fileURLToPath } from "url";
+// ✅ SERVE STATIC FILES
+// If your 'public' folder is in the root and this file is in 'backend/app.js', use:
+const publicPath = path.resolve(__dirname, "..", "public");
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.use(express.static(publicPath));
 
-// ✅ Serve static files
-app.use(express.static(path.join(__dirname, "../public")));
-
-// ✅ FORCE homepage for ALL routes
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+// ✅ CATCH-ALL ROUTE (MUST be at the very bottom)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
 });
+
 export default app;
