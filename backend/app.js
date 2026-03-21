@@ -33,7 +33,6 @@ app.use(adminRoutes);
 app.use(productRoutes);
 
 app.get("/", (req, res) => {
-  res.send("🚀 Sakhi Backend is Live!");
+  res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
-
 export default app;
