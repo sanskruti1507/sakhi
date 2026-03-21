@@ -22,8 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ✅ Serve frontend (FINAL FIX)
-app.use(express.static(path.join(__dirname, "../public")));
+
 
 // ✅ API routes
 app.use(authRoutes);
@@ -34,7 +33,9 @@ app.use("/api/checkout", checkoutRoutes);
 app.use(adminRoutes);
 app.use(productRoutes);
 
-app.get("*", (req, res) => {
+app.use(express.static(path.join(__dirname, "../public")));
+
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 export default app;
