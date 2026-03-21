@@ -34,9 +34,7 @@ app.use("/api/checkout", checkoutRoutes);
 app.use(adminRoutes);
 app.use(productRoutes);
 
-// ✅ Homepage route (FINAL)
-app.get("/", (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
-
 export default app;
