@@ -13,7 +13,7 @@ import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
 
-// ✅ Fix __dirname (VERY IMPORTANT)
+// ✅ Fix __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -28,7 +28,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 
 // ======================================
-// ✅ STEP 2: API routes (keep AFTER static)
+// ✅ STEP 2: API routes
 // ======================================
 app.use("/api/auth", authRoutes);
 app.use("/api/cart", cartRoutes);
@@ -36,13 +36,22 @@ app.use("/api/order", orderRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/product", productRoutes);
+
+// 🔴 FIX: use plural (important for consistency)
+app.use("/api/products", productRoutes);
 
 // ======================================
-// ✅ STEP 3: FINAL fallback (IMPORTANT)
+// ✅ STEP 3: HEALTH CHECK (IMPORTANT)
 // ======================================
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
+app.get("/api", (req, res) => {
+  res.send("API is working ✅");
+});
+
+// ======================================
+// ✅ STEP 4: FINAL FALLBACK (CORRECT WAY)
+// ======================================
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../public/index.html"));
 });
 
 export default app;
