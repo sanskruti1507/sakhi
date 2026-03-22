@@ -21,10 +21,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ✅ Serve frontend
+// ==============================
+// ✅ VERY IMPORTANT (PUT FIRST)
+// ==============================
+
+// Serve frontend
 app.use(express.static(path.join(__dirname, "../public")));
 
-// ✅ API routes
+// Homepage
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
+
+// ==============================
+// ✅ API ROUTES (PUT AFTER)
+// ==============================
+
 app.use(authRoutes);
 app.use(cartRoutes);
 app.use(orderRoutes);
@@ -32,10 +44,5 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use(adminRoutes);
 app.use(productRoutes);
-
-// ✅ ONLY THIS homepage route
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/index.html"));
-});
 
 export default app;
