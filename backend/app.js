@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/authRoutes.js";
@@ -13,45 +14,45 @@ import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
 
-// ✅ Fix __dirname
+// Fix __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Middleware
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// ======================================
-// ✅ STEP 1: Serve static frontend
-// ======================================
-app.use(express.static(path.join(__dirname, "../public")));
+// Serve static frontend
+const publicPath = path.join(__dirname, "../public");
+app.use(express.static(publicPath));
 
-// ======================================
-// ✅ STEP 2: API routes
-// ======================================
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/admin", adminRoutes);
-
-// 🔴 FIX: use plural (important for consistency)
 app.use("/api/products", productRoutes);
 
-// ======================================
-// ✅ STEP 3: HEALTH CHECK (IMPORTANT)
-// ======================================
 app.get("/api", (req, res) => {
   res.send("API is working ✅");
 });
 
-// ======================================
-// ✅ STEP 4: FINAL FALLBACK (CORRECT WAY)
-// ======================================
+app.get("/", (req, res) => {
+  res.send("🚀 Sakhi Backend is Live");
+});
+
+
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../public/index.html"));
+  const indexPath = path.join(publicPath, "index.html");
+
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send("Frontend not found");
+  }
 });
 
 export default app;
