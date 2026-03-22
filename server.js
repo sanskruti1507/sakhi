@@ -3,32 +3,20 @@ dotenv.config();
 
 import app from "./backend/app.js";
 import connectDB from "./backend/config/db.js";
-import paymentRoutes from "./backend/routes/paymentRoutes.js";
-import { importStaticProducts } from "./backend/utils/importStaticProducts.js";
-import Product from "./backend/models/Product.js";
+
+const PORT = process.env.PORT || 3000;
 
 const start = async () => {
-  await connectDB();
-
-  // ✅ Payment route
-  app.use("/api/payment", paymentRoutes);
-
-  // ✅ Import products if DB empty
   try {
-    const count = await Product.countDocuments();
-    if (!count) {
-      console.log("No products found — importing...");
-      await importStaticProducts();
-    }
+    await connectDB();
+
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+
   } catch (err) {
-    console.log("Import error:", err.message);
+    console.log(err);
   }
-
-  const PORT = process.env.PORT || 3000;
-
-  app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
 };
 
 start();
