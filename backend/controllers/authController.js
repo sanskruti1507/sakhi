@@ -35,11 +35,11 @@ export const login = async (req, res) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) return res.send("Invalid credentials");
 
-  // ✅ Store userId in cookie
-  res.cookie("userId", user._id.toString(), {
-    httpOnly: true
-  });
-
+res.cookie("userId", user._id.toString(), {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
   // ✅ Redirect to HOME page
   res.redirect("/index.html");
 };
